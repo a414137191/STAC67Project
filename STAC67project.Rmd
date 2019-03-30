@@ -1,0 +1,23 @@
+---
+title: "STAC67project"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+url="housing.proper.csv"
+housing=read_csv(url)
+housing
+summary(housing)
+```
+```{r}
+Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+apply(housing, 2, Mode)
+```
+
+
