@@ -5,9 +5,9 @@ output: html_notebook
 
 
 ```{r}
+#data
 library(tidyverse)
-url="housing.proper.csv"
-housing=read_csv(url)
+housing <- read.csv("housing.proper.csv")
 housing
 summary(housing)
 ```
@@ -20,4 +20,42 @@ Mode <- function(x) {
 apply(housing, 2, Mode)
 ```
 
+```{r}
+#housing <- read.csv("housing.proper.csv")
+colnames(housing) <- c("X1","X2","X3","X4","X5","X6","X7",
+                       "X8","X9","X10","X11","X12","X13","Y")
+#head(housing)
 
+#half the data set is choosen to create the model
+#other half is for validation
+housing_mod <- housing[sample(nrow(housing), 253),c(1:14)]
+#housing_mod <- housing[1:253,c(1:14)]
+fit_select <- lm(Y ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
+summary(fit_select)
+```
+```{r}
+# Stepwise Regression with function stepAIC with all 13 variables (Akaike's Information Criterion)
+library(MASS)
+#fit_select = lm(Y ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
+step = stepAIC(fit_select, direction = "both")
+step$anova # display results
+```
+```{r}
+# Model validation
+# ------------------------------------
+# Selected model:
+fit_sel <- lm(Y ~ X1 + X2 + X4 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
+newx <- housing[,c(1, 2, 4, 5, 6, 8:13)]
+colnames(newx) <- c("X1","X2","X4","X5","X6",
+                       "X8","X9","X10","X11","X12","X13")
+Y_pred <- predict(fit_sel, newx)
+Y_obs <- housing[,14] 
+n_star <- nrow(newx)
+MSPE <- sum( (Y_obs-Y_pred)^2/n_star )
+MS_res <- (summary(fit_sel)$sigma)^2
+
+MSPE
+MS_res
+sum(MSPE - MS_res)
+sum((housing_mod$Y - predict(fit_sel))^2)
+```
