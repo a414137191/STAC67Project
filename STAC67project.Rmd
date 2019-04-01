@@ -62,3 +62,17 @@ MS_res
 sum(MSPE - MS_res)
 sum((housing_mod$Y - predict(fit_sel))^2)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+# Normal QQ Plot
+
