@@ -19,6 +19,15 @@ Mode <- function(x) {
 
 apply(housing, 2, Mode)
 ```
+```{r}
+library(GGally)
+ggcorr(housing[,1:14], name = "corr", label = TRUE)
+```
+
+```{r}
+library(GGally)
+ggcorr(housing[,1:14], name = "corr", label = TRUE)
+```
 
 ```{r}
 #housing <- read.csv("housing.proper.csv")
