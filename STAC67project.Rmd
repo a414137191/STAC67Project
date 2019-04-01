@@ -1,7 +1,14 @@
 ---
-title: "STAC67project"
-output: html_notebook
+title: 'STAC67 Case Study: Predictive Model For The Median Value Of Homes In Boston'
+author: Group 18 / Abbas Rai 1003957104 / Calvin Chan 999940364 / Huan Wang / Ruotong Zheng / Andrey Zhuravlev
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
 ---
+#Abstract
+Buying a home is one of the most important purchase decisions in one’s life. There are many important factors for one to consider, especially the value of the home one is purchasing. In reality, the value of a home can be evaluated based on an in-depth analysis of the home’s geographical location and several other environmental and socioeconomic factors. Our team has used a plethora of statistical tests and considered several influential variables associated with this important topic in order to develop a predictive model which best explains the value of homes in the city of Boston.
+
 
 
 ```{r}
