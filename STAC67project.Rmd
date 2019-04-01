@@ -1,6 +1,9 @@
 ---
-title: "STAC67project"
-output: html_notebook
+title: "STAC67 Case Study: Analyzing The Boston House Price Level Conundrum"
+author: Group 18 / Abbas Rai 1003957104 / Calvin Chan 999940364 / Huan Wang / Ruotong Zheng / Andrey Zhuravlev
+output:
+  word_document: default
+  html_notebook: default
 ---
 
 
