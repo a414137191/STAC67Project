@@ -1,6 +1,6 @@
 ---
 title: 'STAC67 Case Study: Predictive Model For The Median Value Of Homes In Boston'
-author: Group 18 / Abbas Rai 1003957104 / Calvin Chan 999940364 / Huan Wang / Ruotong Zheng / Andrey Zhuravlev
+author: Group 18 / Abbas Rai 1003957104 / Calvin Chan 999940364 / Huan Wang 1001707049/ Ruotong Zheng / Andrey Zhuravlev
 output:
   word_document: default
   html_notebook: default
