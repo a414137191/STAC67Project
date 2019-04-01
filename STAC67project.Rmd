@@ -1,9 +1,6 @@
 ---
-title: "STAC67 Case Study: Analyzing The Boston House Price Level Conundrum"
-author: Group 18 / Abbas Rai 1003957104 / Calvin Chan 999940364 / Huan Wang / Ruotong Zheng / Andrey Zhuravlev
-output:
-  word_document: default
-  html_notebook: default
+title: "STAC67project"
+output: html_notebook
 ---
 
 
@@ -31,26 +28,28 @@ colnames(housing) <- c("X1","X2","X3","X4","X5","X6","X7",
 
 #half the data set is choosen to create the model
 #other half is for validation
+set.seed(67)
 housing_mod <- housing[sample(nrow(housing), 253),c(1:14)]
 #housing_mod <- housing[1:253,c(1:14)]
 fit_select <- lm(Y ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
 summary(fit_select)
 ```
+
 ```{r}
 # Stepwise Regression with function stepAIC with all 13 variables (Akaike's Information Criterion)
 library(MASS)
-#fit_select = lm(Y ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
-step = stepAIC(fit_select, direction = "both")
+fit_select2 = lm(Y ~ X1 + X2 + X3 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
+step = stepAIC(fit_select2, direction = "both")
 step$anova # display results
 ```
+
 ```{r}
 # Model validation
 # ------------------------------------
 # Selected model:
-fit_sel <- lm(Y ~ X1 + X2 + X4 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
-newx <- housing[,c(1, 2, 4, 5, 6, 8:13)]
-colnames(newx) <- c("X1","X2","X4","X5","X6",
-                       "X8","X9","X10","X11","X12","X13")
+fit_sel <- lm(Y ~ X2 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
+newx <- housing[,c(2, 5, 6, 8:13)]
+colnames(newx) <- c("X2","X5","X6","X8","X9","X10","X11","X12","X13")
 Y_pred <- predict(fit_sel, newx)
 Y_obs <- housing[,14] 
 n_star <- nrow(newx)
@@ -63,16 +62,71 @@ sum(MSPE - MS_res)
 sum((housing_mod$Y - predict(fit_sel))^2)
 ```
 
+```{r}
+# Model diagnostics
+# -------------------------------
+#library(car)
+fit <- lm(Y ~ X2 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13, data = housing)
+# Functional form
+par(mfrow = c(2,2), oma = c(1,1,0,0), 
+    mar = c(2,2,2,2), tcl = -0.1, mgp = c(1,0,0))
+plot(fit$residuals~X2, xlab = "X2", ylab = "Residuals")
+abline(h = 0)
+plot(fit$residuals~X5, xlab = "X5", ylab = "Residuals")
+abline(h = 0)
+plot(fit$residuals~X6, xlab = "X6", ylab = "Residuals")
+abline(h = 0)
+plot(fit$residuals~X8, xlab = "X8", ylab = "Residuals")
+abline(h = 0)
+plot(fit$residuals~X9, xlab = "X9", ylab = "Residuals")
+abline(h = 0)
+plot(fit$residuals~X10, xlab = "X10", ylab = "Residuals")
+abline(h = 0)
+plot(fit$residuals~X11, xlab = "X11", ylab = "Residuals")
+abline(h = 0)
+plot(fit$residuals~X12, xlab = "X12", ylab = "Residuals")
+abline(h = 0)
+plot(fit$residuals~X13, xlab = "X13", ylab = "Residuals")
+abline(h = 0)
+plot(fit$residuals~fit$fitted.values, xlab = "Fitted values", ylab = "Residuals")
+abline(h = 0)
+par(mfrow = c(1,1))
+```
 
+```{r}
+# Outlying Y observations
+#library(car)
+# Statistical test
+outlierTest(fit)
+# Studentized deleted residuals
+t <- rstudent(fit)
+alpha <- 0.05
+n <- length(Y)
+p_prime = length(coef(fit)) 
+t_crit <- qt(1-alpha/(2*n),n-p_prime-1)
+round(t,2)
+t_crit
+which(abs(t) > t_crit)
+```
 
+```{r}
+# Outlying X observations 
+Pii <- hatvalues(fit)
+round(Pii, 2)
+which(Pii > 2*p_prime/n)
+which(Pii > 0.5)
+```
 
-
-
-
-
-
-
-
-
-# Normal QQ Plot
-
+```{r}
+# Influence 
+influencePlot(fit,	id.method="identify", 
+              main="Influence Plot", 
+              sub="Circle size is proportial to Cook's Distance" )
+DFFITS <- dffits(fit)
+which(DFFITS > 1)
+D <- cooks.distance(fit)
+which(D > qf(0.2, p_prime, n-p_prime))
+DFBETAS <- dfbetas(fit)
+head(DFBETAS)
+which(DFBETAS > 1)
+```
