@@ -1,7 +1,7 @@
 ---
 title: 'STAC67 Case Study: Predictive Model For The Median Value Of Homes In Boston'
 author: Group 18 / Abbas Rai 1003957104 / Calvin Chan 999940364 / Huan Wang 1001707049/
-  Ruotong Zheng 1002586659/ Andrey Zhuravlev
+  Ruotong Zheng 1002586659/ Andrey Zhuravlev 1003148961
 output:
   word_document: default
   html_document:
@@ -10,7 +10,7 @@ output:
   html_notebook: default
 ---
 #Abstract
-Buying a home is one of the most important purchase decisions in one¡¯s life. There are many important factors for one to consider, especially the value of the home one is purchasing. In reality, the value of a home can be evaluated based on an in-depth analysis of the home¡¯s geographical location and several other environmental and socioeconomic factors. Our team has used a plethora of statistical tests and considered several influential variables associated with this important topic in order to develop a predictive model which best explains the value of homes in the city of Boston.
+Buying a home is one of the most important purchase decisions in oneÂ¡Â¯s life. There are many important factors for one to consider, especially the value of the home one is purchasing. In reality, the value of a home can be evaluated based on an in-depth analysis of the homeÂ¡Â¯s geographical location and several other environmental and socioeconomic factors. Our team has used a plethora of statistical tests and considered several influential variables associated with this important topic in order to develop a predictive model which best explains the value of homes in the city of Boston.
 
 #Background and Significance
 The debate surrounding purchasing the "ideal" home is one that is extremely prevalent within households across the globe. People work extremely hard to save up to buy a home, making it one of the most important investments in one's lifetime. In fact, research shows that it takes the average American more than seven years to save up enough money just to deposit the down payment towards a home (Olsen, 2018). Moreover, future home buyers find themselves in an even more vulnerable position. Due to inflation and increasing price levels within the economy, there has been an increasing trend of the time needed to save up for a home in America, which has already risen by almost two years since 1988 (Olsen, 2018). The presence of these trends makes it even more important for individuals to make smart home purchases, in order to avoid facing severe economic repercussions. One of the fundamental factors which affects the value of a home is safety. In 2019, the median home value in Boston is $600,100 which have gone up 5.7% over the past year. The data shows that since 2013, housing prices in Boston area have risen significantly. The price of detached houses rose by 18.8%, while apartments were more powerful, with an increase of 22.8%. From the Boston real estate data, supply has been decreasing. The supply of detached houses has fallen by 38.2%, and the supply of apartments has fallen by 44%(Zillow 2019).
@@ -43,7 +43,7 @@ This data set contains 506 observations (median value of owner occupied homes in
 Property(house) value is the worth(price) of a piece of real estate which both of the buyer and seller agree upon(Bankrate 2019). In this data, we use the median value of the house value of owner occupied homes in thousands (MEDV) dollars. What buyers are willing to pay for property depends on a number of factors which in our data there are 13 predictors that may affect the house value. In our data, the Min, Mean,Max,Mode of MEDV are 5, 22.53, 50, and 50 respectively.
 
 #Per capita crime rate by town (x1)
-Crime rate, measured in per capita by town. A report published by the Center for American Progress concluded that ¡°a 10% reduction in homicides would lead to a 0.83% increase in housing values the following year.¡± (Byloos, 2016).The Mean and Mode of crime rate are 3.61352, and 0.01501 respectively. The minimum and maximum crime rates committed in town are 0.0632 and 88.9762 respectively.
+Crime rate, measured in per capita by town. A report published by the Center for American Progress concluded that Â¡Â°a 10% reduction in homicides would lead to a 0.83% increase in housing values the following year.Â¡Â± (Byloos, 2016).The Mean and Mode of crime rate are 3.61352, and 0.01501 respectively. The minimum and maximum crime rates committed in town are 0.0632 and 88.9762 respectively.
 
 #Lots over 25,000 sq.ft. (x2)
 This concerns about the proportion of residential land zoned for lots over 25,000 sq.ft..The Min, Mean,Max of it are 0, 11.36, and 100 respectively.
@@ -224,12 +224,15 @@ new_fit <- lm(Y ~ X2 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13, data = new_dat
 plot(new_fit)
 ```
 
+#Conclusion
+The goal of this case study is to derive a model which best predicts the median value of owner occupied homes in the city of Boston, based on the given dataset.
+
 #References
 Bankrate. (2019). Property value Definition | Bankrate.com. [online] Available at: https://www.bankrate.com/glossary/p/property-value/ [Accessed 30 Mar. 2019].
 
 Zillow.com. (2019). Boston Home Prices & Values. [online] Available at: https://www.zillow.com/boston-ma/home-values/ [Accessed 30 Mar. 2019].
 
-Olsen, S. (2018, October 22). Home Buyers Need 7.2 Years to Save Down Payments ¨C 1.5 Years More Than in 1988. Retrieved from https://www.zillow.com/research/how-many-years-down-payment-21734/
+Olsen, S. (2018, October 22). Home Buyers Need 7.2 Years to Save Down Payments Â¨C 1.5 Years More Than in 1988. Retrieved from https://www.zillow.com/research/how-many-years-down-payment-21734/
 
 Byloos, M. (2016). Research Crime Rates and the Impact on Home Values | Homes.com. Retrieved from https://www.homes.com/blog/2016/05/secure-new-home-research-crime-rates-impact-home-value/
 
