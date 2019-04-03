@@ -1,10 +1,13 @@
 ---
 title: 'STAC67 Case Study: Predictive Model For The Median Value Of Homes In Boston'
-author: Group 18 / Abbas Rai 1003957104 / Calvin Chan 999940364 / Huan Wang 1001707049/ Ruotong Zheng / Andrey Zhuravlev
+author: Group 18 / Abbas Rai 1003957104 / Calvin Chan 999940364 / Huan Wang 1001707049/
+  Ruotong Zheng 1002586659/ Andrey Zhuravlev
 output:
   word_document: default
-  html_notebook: default
+  html_document:
+    df_print: paged
   pdf_document: default
+  html_notebook: default
 ---
 #Abstract
 Buying a home is one of the most important purchase decisions in one’s life. There are many important factors for one to consider, especially the value of the home one is purchasing. In reality, the value of a home can be evaluated based on an in-depth analysis of the home’s geographical location and several other environmental and socioeconomic factors. Our team has used a plethora of statistical tests and considered several influential variables associated with this important topic in order to develop a predictive model which best explains the value of homes in the city of Boston.
@@ -21,14 +24,14 @@ Matthews, J. (2006). Retail Proximity and Residential Values or Do Nearby Stores
 
 
 
-```{r}
+```{r include = FALSE}
 #data
 library(tidyverse)
 housing <- read.csv("housing.proper.csv")
 housing
 summary(housing)
 ```
-```{r}
+```{r echo = FALSE}
 Mode <- function(x) {
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]
@@ -36,39 +39,35 @@ Mode <- function(x) {
 
 apply(housing, 2, Mode)
 ```
-```{r}
+```{r echo = FALSE}
 library(GGally)
 ggcorr(housing[,1:14], name = "corr", label = TRUE)
 ```
 
+#Model
+Half the data set is choosen to create the model and other half is for validation.
+Seed is set to 67 for consistent results.
+```{r include = FALSE}
 
-```{r}
-#housing <- read.csv("housing.proper.csv")
 colnames(housing) <- c("X1","X2","X3","X4","X5","X6","X7",
                        "X8","X9","X10","X11","X12","X13","Y")
-#head(housing)
-
-#half the data set is choosen to create the model
-#other half is for validation
 set.seed(67)
 housing_mod <- housing[sample(nrow(housing), 253),c(1:14)]
-#housing_mod <- housing[1:253,c(1:14)]
 fit_select <- lm(Y ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
 summary(fit_select)
 ```
-
-```{r}
-# Stepwise Regression with function stepAIC with all 13 variables (Akaike's Information Criterion)
+#Model Creation
+Stepwise Regression with function stepAIC with 12 variables (Akaike's Information Criterion).
+X4 is ignored since only 6% of the data set has X4 at 1.
+```{r include = FALSE}
 library(MASS)
 fit_select2 = lm(Y ~ X1 + X2 + X3 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
 step = stepAIC(fit_select2, direction = "both")
-step$anova # display results
+step$anova
 ```
-
-```{r}
 # Model validation
-# ------------------------------------
-# Selected model:
+
+```{r include = FALSE}
 fit_sel <- lm(Y ~ X2 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
 newx <- housing[,c(2, 5, 6, 8:13)]
 colnames(newx) <- c("X2","X5","X6","X8","X9","X10","X11","X12","X13")
@@ -83,72 +82,81 @@ MS_res
 sum(MSPE - MS_res)
 sum((housing_mod$Y - predict(fit_sel))^2)
 ```
-
-```{r}
-# Model diagnostics
-# -------------------------------
-#library(car)
+#Model diagnostics
+Residuals Vs. Fitted Values
+```{r echo = FALSE}
+library(car)
 fit <- lm(Y ~ X2 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13, data = housing)
-# Functional form
 par(mfrow = c(2,2), oma = c(1,1,0,0), 
     mar = c(2,2,2,2), tcl = -0.1, mgp = c(1,0,0))
-plot(fit$residuals~X2, xlab = "X2", ylab = "Residuals")
-abline(h = 0)
-plot(fit$residuals~X5, xlab = "X5", ylab = "Residuals")
-abline(h = 0)
-plot(fit$residuals~X6, xlab = "X6", ylab = "Residuals")
-abline(h = 0)
-plot(fit$residuals~X8, xlab = "X8", ylab = "Residuals")
-abline(h = 0)
-plot(fit$residuals~X9, xlab = "X9", ylab = "Residuals")
-abline(h = 0)
-plot(fit$residuals~X10, xlab = "X10", ylab = "Residuals")
-abline(h = 0)
-plot(fit$residuals~X11, xlab = "X11", ylab = "Residuals")
-abline(h = 0)
-plot(fit$residuals~X12, xlab = "X12", ylab = "Residuals")
-abline(h = 0)
-plot(fit$residuals~X13, xlab = "X13", ylab = "Residuals")
-abline(h = 0)
+#plot(fit$residuals~X2, xlab = "X2", ylab = "Residuals")
+#abline(h = 0)
+#plot(fit$residuals~X5, xlab = "X5", ylab = "Residuals")
+#abline(h = 0)
+#plot(fit$residuals~X6, xlab = "X6", ylab = "Residuals")
+#abline(h = 0)
+#plot(fit$residuals~X8, xlab = "X8", ylab = "Residuals")
+#abline(h = 0)
+#plot(fit$residuals~X9, xlab = "X9", ylab = "Residuals")
+#abline(h = 0)
+#plot(fit$residuals~X10, xlab = "X10", ylab = "Residuals")
+#abline(h = 0)
+#plot(fit$residuals~X11, xlab = "X11", ylab = "Residuals")
+#abline(h = 0)
+#plot(fit$residuals~X12, xlab = "X12", ylab = "Residuals")
+#abline(h = 0)
+#plot(fit$residuals~X13, xlab = "X13", ylab = "Residuals")
+#abline(h = 0)
 plot(fit$residuals~fit$fitted.values, xlab = "Fitted values", ylab = "Residuals")
 abline(h = 0)
 par(mfrow = c(1,1))
 ```
-
-```{r}
-# Outlying Y observations
-#library(car)
+#Outlying Y observations
+We found the threshold(t_crit) to be 3.925493. Using studentized deleted residuals we found that observations 369, 370, 372,and 373 above the threshold and therefore are the outlying Y observations.
+```{r include = FALSE}
+library(car)
 # Statistical test
 outlierTest(fit)
 # Studentized deleted residuals
 t <- rstudent(fit)
 alpha <- 0.05
-n <- length(Y)
+n <- length(housing$Y)
 p_prime = length(coef(fit)) 
 t_crit <- qt(1-alpha/(2*n),n-p_prime-1)
 round(t,2)
 t_crit
 which(abs(t) > t_crit)
 ```
-
-```{r}
-# Outlying X observations 
+# Outlying X observations (Leverage)
+No leverage points is with guideline 2 which is Pii > 0.5.
+With the guideline Pii > 2*p_prime/n there are 46 leverage points.
+[9, 49, 55, 103, 142, 143, 144, 145, 146, 147, 148, 149 151, 152, 153, 154, 155, 156, 157, 160, 204, 205, 254, 258, 291, 292, 293, 352, 353, 354, 355, 356, 365, 366, 368, 369, 375, 411, 413, 415, 425, 489, 490, 491, 492, 493]
+```{r echo = FALSE}
 Pii <- hatvalues(fit)
 round(Pii, 2)
 which(Pii > 2*p_prime/n)
 which(Pii > 0.5)
 ```
-
-```{r}
-# Influence 
+# Influence
+```{r echo = FALSE}
 influencePlot(fit,	id.method="identify", 
               main="Influence Plot", 
               sub="Circle size is proportial to Cook's Distance" )
+```
+```{r include = FALSE}
 DFFITS <- dffits(fit)
 which(DFFITS > 1)
+which(DFFITS > 2*sqrt(p_prime/n))
+```
+
+```{r include = FALSE}
 D <- cooks.distance(fit)
 which(D > qf(0.2, p_prime, n-p_prime))
+```
+There are no observations with a Cooks Distance greater than the 20th percentile of F(10,496).
+```{r include = FALSE}
 DFBETAS <- dfbetas(fit)
 head(DFBETAS)
 which(DFBETAS > 1)
+which(DFBETAS > 2/(sqrt(n)))
 ```
