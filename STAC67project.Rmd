@@ -15,14 +15,6 @@ Buying a home is one of the most important purchase decisions in one’s life. T
 #Background and Significance
 The debate surrounding purchasing the "ideal" home is one that is extremely prevalent within households across the globe. People work extremely hard to save up to buy a home, making it one of the most important investments in one's lifetime. In fact, research shows that it takes the average American more than seven years to save up enough money just to deposit the down payment towards a home (Olsen, 2018). Moreover, future home buyers find themselves in an even more vulnerable position. Due to inflation and increasing price levels within the economy, there has been an increasing trend of the time needed to save up for a home in America, which has already risen by almost two years since 1988 (Olsen, 2018). The presence of these trends makes it even more important for individuals to make smart home purchases, in order to avoid facing severe economic repercussions. One of the fundamental factors which affects the value of a home is safety. A report published by the Center for American Progress concluded that “a 10% reduction in homicides would lead to a 0.83% increase in housing values the following year.” (Byloos, 2016). In addition, one must consider the presence of retail stores in the nearby area, which can actually lower the value of a house if located within close proximity (Matthews, 2006). We ultimately propose the following model to predict the median house price levels in Boston in order to provide home buyers and real estate agents with more holistic understanding of the factors which influence the value of homes and provide them with the necessary information to understand the housing market better and make better decisions overall.
 
-#References
-Olsen, S. (2018, October 22). Home Buyers Need 7.2 Years to Save Down Payments – 1.5 Years More Than in 1988. Retrieved from https://www.zillow.com/research/how-many-years-down-payment-21734/
-
-Byloos, M. (2016). Research Crime Rates and the Impact on Home Values | Homes.com. Retrieved from https://www.homes.com/blog/2016/05/secure-new-home-research-crime-rates-impact-home-value/
-
-Matthews, J. (2006). Retail Proximity and Residential Values or Do Nearby Stores Really Run Down Property Values?. SSRN Electronic Journal. doi: 10.2139/ssrn.989049
-
-
 
 ```{r include = FALSE}
 #data
@@ -45,10 +37,8 @@ ggcorr(housing[,1:14], name = "corr", label = TRUE)
 ```
 
 #Model
-Half the data set is choosen to create the model and other half is for validation.
-Seed is set to 67 for consistent results.
-```{r include = FALSE}
 
+```{r include = FALSE}
 colnames(housing) <- c("X1","X2","X3","X4","X5","X6","X7",
                        "X8","X9","X10","X11","X12","X13","Y")
 set.seed(67)
@@ -56,8 +46,11 @@ housing_mod <- housing[sample(nrow(housing), 253),c(1:14)]
 fit_select <- lm(Y ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
 summary(fit_select)
 ```
+
 #Model Creation
-Stepwise Regression with function stepAIC with 12 variables (Akaike's Information Criterion).
+
+Half the data set is choosen to create the model and other half is for validation. Seed is set to 67 for consistent results.
+We used stepwise regression with function stepAIC with 12 variables which checks which variables have an Akaike's Information Criterion(AIC) lower than the threshold AIC.
 X4 is ignored since only 6% of the data set has X4 at 1.
 ```{r include = FALSE}
 library(MASS)
@@ -65,12 +58,18 @@ fit_select2 = lm(Y ~ X1 + X2 + X3 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X
 step = stepAIC(fit_select2, direction = "both")
 step$anova
 ```
-# Model validation
+The resulting model is Y ~ X2 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13.
 
+#Model validation
+
+The remaining 50% of the data set is used for validation. We checked the difference between the Mean Square Prediction Error(MSPE) and the Mean Square Residual(MSRes).
 ```{r include = FALSE}
+#Model Selected
 fit_sel <- lm(Y ~ X2 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13, data = housing_mod)
+#modify data set with the X's we need
 newx <- housing[,c(2, 5, 6, 8:13)]
 colnames(newx) <- c("X2","X5","X6","X8","X9","X10","X11","X12","X13")
+#MSPE - MS_res
 Y_pred <- predict(fit_sel, newx)
 Y_obs <- housing[,14] 
 n_star <- nrow(newx)
@@ -80,39 +79,47 @@ MS_res <- (summary(fit_sel)$sigma)^2
 MSPE
 MS_res
 sum(MSPE - MS_res)
-sum((housing_mod$Y - predict(fit_sel))^2)
 ```
+We got 23.217 as the MSPE and 22.251 for the MSRes. The difference(0.966) is fairly close so we can validate this model
+
 #Model diagnostics
-Residuals Vs. Fitted Values
+
+##Residuals Vs. Fitted Values
+
 ```{r echo = FALSE}
-library(car)
+#Functional form
+#library(car)
+#our model with the whole data set
 fit <- lm(Y ~ X2 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13, data = housing)
-par(mfrow = c(2,2), oma = c(1,1,0,0), 
-    mar = c(2,2,2,2), tcl = -0.1, mgp = c(1,0,0))
-#plot(fit$residuals~X2, xlab = "X2", ylab = "Residuals")
+#par(mfrow = c(2,2), oma = c(1,1,0,0), 
+#    mar = c(2,2,2,2), tcl = -0.1, mgp = c(1,0,0))
+
+#plot(fit$residuals~fit$fitted.values, xlab = "Fitted values", ylab = "Residuals", main = "Residuals Vs. Fitted Values")
 #abline(h = 0)
-#plot(fit$residuals~X5, xlab = "X5", ylab = "Residuals")
-#abline(h = 0)
-#plot(fit$residuals~X6, xlab = "X6", ylab = "Residuals")
-#abline(h = 0)
-#plot(fit$residuals~X8, xlab = "X8", ylab = "Residuals")
-#abline(h = 0)
-#plot(fit$residuals~X9, xlab = "X9", ylab = "Residuals")
-#abline(h = 0)
-#plot(fit$residuals~X10, xlab = "X10", ylab = "Residuals")
-#abline(h = 0)
-#plot(fit$residuals~X11, xlab = "X11", ylab = "Residuals")
-#abline(h = 0)
-#plot(fit$residuals~X12, xlab = "X12", ylab = "Residuals")
-#abline(h = 0)
-#plot(fit$residuals~X13, xlab = "X13", ylab = "Residuals")
-#abline(h = 0)
-plot(fit$residuals~fit$fitted.values, xlab = "Fitted values", ylab = "Residuals")
-abline(h = 0)
-par(mfrow = c(1,1))
+#par(mfrow = c(1,1))
+
+plot(fit, which=c(1))
 ```
-#Outlying Y observations
-We found the threshold(t_crit) to be 3.925493. Using studentized deleted residuals we found that observations 369, 370, 372,and 373 above the threshold and therefore are the outlying Y observations.
+
+The Residuals vs Fitted plot shows a random spread points therefore it indicates a proper functional form.
+
+##Normal Q-Q Plot
+
+```{r echo = FALSE}
+plot(fit, which=c(2))
+```
+
+The normal Q-Q plot shows that the errors are normally distributed. Most of the residuals follow the straight line but there are many residuals off the line towards the ends. 
+There are three noteworthy points of 369, 373, and 372. Since most of the residuals are along the line, there is no indication that normality is violated.
+
+##Scale-Location
+
+```{r echo = FALSE}
+plot(fit, which=c(3))
+```
+
+##Outlying Y observations
+
 ```{r include = FALSE}
 library(car)
 # Statistical test
@@ -127,36 +134,53 @@ round(t,2)
 t_crit
 which(abs(t) > t_crit)
 ```
-# Outlying X observations (Leverage)
-No leverage points is with guideline 2 which is Pii > 0.5.
-With the guideline Pii > 2*p_prime/n there are 46 leverage points.
-[9, 49, 55, 103, 142, 143, 144, 145, 146, 147, 148, 149 151, 152, 153, 154, 155, 156, 157, 160, 204, 205, 254, 258, 291, 292, 293, 352, 353, 354, 355, 356, 365, 366, 368, 369, 375, 411, 413, 415, 425, 489, 490, 491, 492, 493]
-```{r echo = FALSE}
+We found the threshold(t_crit) to be 3.925493. Using studentized deleted residuals we found that observations 369, 370, 372,and 373 above the threshold and therefore are the outlying Y observations.
+
+##Outlying X observations (Leverage)
+
+```{r include = FALSE}
 Pii <- hatvalues(fit)
 round(Pii, 2)
 which(Pii > 2*p_prime/n)
 which(Pii > 0.5)
 ```
-# Influence
+No leverage points is with guideline 2 which is Pii > 0.5.
+With the guideline Pii > 2*p_prime/n there are 46 leverage points.
+
+[9, 49, 55, 103, 142, 143, 144, 145, 146, 147, 148, 149 151, 152, 153, 154, 155, 156, 157, 160, 204, 205, 254, 258, 291, 292, 293, 352, 353, 354, 355, 356, 365, 366, 368, 369, 375, 411, 413, 415, 425, 489, 490, 491, 492, 493]
+
+##Influence
+
 ```{r echo = FALSE}
-influencePlot(fit,	id.method="identify", 
-              main="Influence Plot", 
-              sub="Circle size is proportial to Cook's Distance" )
+influencePlot(fit, main="Influence Plot", sub="Circle size is proportial to Cook's Distance" )
 ```
 ```{r include = FALSE}
 DFFITS <- dffits(fit)
 which(DFFITS > 1)
-which(DFFITS > 2*sqrt(p_prime/n))
+#which(DFFITS > 2*sqrt(p_prime/n))
 ```
-
+There is only one data point that has a DFFITS greater than 1 which is 369.
 ```{r include = FALSE}
 D <- cooks.distance(fit)
 which(D > qf(0.2, p_prime, n-p_prime))
 ```
-There are no observations with a Cooks Distance greater than the 20th percentile of F(10,496).
+There are no observations with a Cooks Distance greater than the 20th percentile of F(10,496) = 0.6168.
 ```{r include = FALSE}
 DFBETAS <- dfbetas(fit)
-head(DFBETAS)
 which(DFBETAS > 1)
-which(DFBETAS > 2/(sqrt(n)))
+#which(DFBETAS > 2/(sqrt(n)))
 ```
+There are no observations with a DFBETAS greater than 1.
+```{r echo = FALSE}
+layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page
+new_data <- housing[-c(369),]
+new_fit <- lm(Y ~ X2 + X5 + X6 + X8 + X9 + X10 + X11 + X12 + X13, data = new_data)
+plot(new_fit)
+```
+
+#References
+Olsen, S. (2018, October 22). Home Buyers Need 7.2 Years to Save Down Payments – 1.5 Years More Than in 1988. Retrieved from https://www.zillow.com/research/how-many-years-down-payment-21734/
+
+Byloos, M. (2016). Research Crime Rates and the Impact on Home Values | Homes.com. Retrieved from https://www.homes.com/blog/2016/05/secure-new-home-research-crime-rates-impact-home-value/
+
+Matthews, J. (2006). Retail Proximity and Residential Values or Do Nearby Stores Really Run Down Property Values?. SSRN Electronic Journal. doi: 10.2139/ssrn.989049
