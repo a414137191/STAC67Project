@@ -10,17 +10,17 @@ output:
   html_notebook: default
 ---
 #Abstract
-Buying a home is one of the most important purchase decisions in one‚Äôs life. There are many important factors for one to consider, especially the value of the home one is purchasing. In reality, the value of a home can be evaluated based on an in-depth analysis of the home‚Äôs geographical location and several other environmental and socioeconomic factors. Our team has used a plethora of statistical tests and considered several influential variables associated with this important topic in order to develop a predictive model which best explains the value of homes in the city of Boston.
+Buying a home is one of the most important purchase decisions in one°Øs life. There are many important factors for one to consider, especially the value of the home one is purchasing. In reality, the value of a home can be evaluated based on an in-depth analysis of the home°Øs geographical location and several other environmental and socioeconomic factors. Our team has used a plethora of statistical tests and considered several influential variables associated with this important topic in order to develop a predictive model which best explains the value of homes in the city of Boston.
 
 #Background and Significance
-The debate surrounding purchasing the "ideal" home is one that is extremely prevalent within households across the globe. People work extremely hard to save up to buy a home, making it one of the most important investments in one's lifetime. In fact, research shows that it takes the average American more than seven years to save up enough money just to deposit the down payment towards a home (Olsen, 2018). Moreover, future home buyers find themselves in an even more vulnerable position. Due to inflation and increasing price levels within the economy, there has been an increasing trend of the time needed to save up for a home in America, which has already risen by almost two years since 1988 (Olsen, 2018). The presence of these trends makes it even more important for individuals to make smart home purchases, in order to avoid facing severe economic repercussions. One of the fundamental factors which affects the value of a home is safety. A report published by the Center for American Progress concluded that ‚Äúa 10% reduction in homicides would lead to a 0.83% increase in housing values the following year.‚Äù (Byloos, 2016). In addition, one must consider the presence of retail stores in the nearby area, which can actually lower the value of a house if located within close proximity (Matthews, 2006). We ultimately propose the following model to predict the median house price levels in Boston in order to provide home buyers and real estate agents with more holistic understanding of the factors which influence the value of homes and provide them with the necessary information to understand the housing market better and make better decisions overall.
+The debate surrounding purchasing the "ideal" home is one that is extremely prevalent within households across the globe. People work extremely hard to save up to buy a home, making it one of the most important investments in one's lifetime. In fact, research shows that it takes the average American more than seven years to save up enough money just to deposit the down payment towards a home (Olsen, 2018). Moreover, future home buyers find themselves in an even more vulnerable position. Due to inflation and increasing price levels within the economy, there has been an increasing trend of the time needed to save up for a home in America, which has already risen by almost two years since 1988 (Olsen, 2018). The presence of these trends makes it even more important for individuals to make smart home purchases, in order to avoid facing severe economic repercussions. One of the fundamental factors which affects the value of a home is safety. In 2019, the median home value in Boston is $600,100 which have gone up 5.7% over the past year. The data shows that since 2013, housing prices in Boston area have risen significantly. The price of detached houses rose by 18.8%, while apartments were more powerful, with an increase of 22.8%. From the Boston real estate data, supply has been decreasing. The supply of detached houses has fallen by 38.2%, and the supply of apartments has fallen by 44%(Zillow 2019).
+We ultimately propose the following model to predict the median house price levels in Boston in order to provide home buyers and real estate agents with more holistic understanding of the factors which influence the value of homes and provide them with the necessary information to understand the housing market better and make better decisions overall.
 
 
 ```{r include = FALSE}
 #data
-library(tidyverse)
+
 housing <- read.csv("housing.proper.csv")
-housing
 summary(housing)
 ```
 ```{r echo = FALSE}
@@ -35,6 +35,52 @@ apply(housing, 2, Mode)
 library(GGally)
 ggcorr(housing[,1:14], name = "corr", label = TRUE)
 ```
+
+#Exploratory data analysis
+This data set contains 506 observations (median value of owner occupied homes in thousands, MEDV) and 13 other. predictors, which are per capita crime rate by town (x1), proportion of residential land zoned for lots over 25,000 sq.ft. (x2), proportion of non-retail business acres per town (x3), Charles River dummy variable (x4), nitric oxide concentration (parts per 10 million) (x5), average number of rooms per dwelling (x6), proportion of owner occupied units built prior to 1940 (x7), weighted distances to five Boston employment centres (x8), index of accessibility to radial highways (x9), full-value property-tax rate per 10,000 (x10), pupil-teacher ratio by town (x11), 1000(B-0.63)2 where B is the proportion of African Americans by town (x12), a numeric vector of percentage values of lower status population (x13).
+
+#House value
+Property(house) value is the worth(price) of a piece of real estate which both of the buyer and seller agree upon(Bankrate 2019). In this data, we use the median value of the house value of owner occupied homes in thousands (MEDV) dollars. What buyers are willing to pay for property depends on a number of factors which in our data there are 13 predictors that may affect the house value. In our data, the Min, Mean,Max,Mode of MEDV are 5, 22.53, 50, and 50 respectively.
+
+#Per capita crime rate by town (x1)
+Crime rate, measured in per capita by town. A report published by the Center for American Progress concluded that °∞a 10% reduction in homicides would lead to a 0.83% increase in housing values the following year.°± (Byloos, 2016).The Mean and Mode of crime rate are 3.61352, and 0.01501 respectively. The minimum and maximum crime rates committed in town are 0.0632 and 88.9762 respectively.
+
+#Lots over 25,000 sq.ft. (x2)
+This concerns about the proportion of residential land zoned for lots over 25,000 sq.ft..The Min, Mean,Max of it are 0, 11.36, and 100 respectively.
+
+#Proportion of non-retail business acres per town (x3)
+One must consider the presence of retail stores in the nearby area, which can actually lower the value of a house if located within close proximity (Matthews, 2006).The aces of town that is of non-retail business in proportion takes up on average 11.13678 aces. The min and max acres are 0.64 and 27.76.
+
+#Charles River dummy variable (x4)
+The Charles River dummy variable measures of either 1 or 0 to represent whether the property is located alongside the Charles River or not. Of the 506 observed locations, only 35 locations (6.917%) fulfill this variable.
+
+#Nitric oxide concentration (parts per 10 million) (x5)
+Properties locate within 0.5546951( parts per 10 million) nitric oxide concentration. The concentrate ranges from 0.385 to 0.871(parts per 10 million concentrate) for located housing.
+
+#Average number of rooms per dwelling (x6)
+The average rooms per dwelling is 6.284634 with the min and max dwellings being 3.561 and 8.78 respectively.
+
+#Proportion of owner occupied units built prior to 1940 (x7)
+Owner occupied units has raised to about 68.5749 percent prior to 1940. Since 1940, at lowest only 2.9 percent of owners occupied units while at max 100 percent of the units were occupied.
+
+#Weighted distances to five Boston employment centres (x8)
+3.79503 is the mean weighted distance to five Boston employment centres. At max is 12.1695 and at min the distance is 1.1296
+
+#Index of accessibility to radial highways (x9)
+We are on average 9.549407 accessible to radial highways.It also seems to have a strong correlation to X10.
+
+#Full-value property-tax rate per 10,000 (x10)
+The mean, min, max full-value property tax rate per 10,000 is 408.2372, 187, 711 respectively.
+
+#Pupil-teacher ratio by town (x11)
+The mean pupil to teacher range is about 18 students to 1 teacher by town. The median pupil to teacher ratio is 19 students to 1 teacher.
+
+#African Americans by town (x12)
+This represents 1000(B-0.63)^2 where B is the proportion of African Americans by town. The mean and
+mode are 356.67 and 396.9 respectively.
+
+#A numeric vector of percentage values of lower status population (x13)
+12.65306 of the housing are of lower status populated.
 
 #Model
 
@@ -179,7 +225,11 @@ plot(new_fit)
 ```
 
 #References
-Olsen, S. (2018, October 22). Home Buyers Need 7.2 Years to Save Down Payments ‚Äì 1.5 Years More Than in 1988. Retrieved from https://www.zillow.com/research/how-many-years-down-payment-21734/
+Bankrate. (2019). Property value Definition | Bankrate.com. [online] Available at: https://www.bankrate.com/glossary/p/property-value/ [Accessed 30 Mar. 2019].
+
+Zillow.com. (2019). Boston Home Prices & Values. [online] Available at: https://www.zillow.com/boston-ma/home-values/ [Accessed 30 Mar. 2019].
+
+Olsen, S. (2018, October 22). Home Buyers Need 7.2 Years to Save Down Payments ®C 1.5 Years More Than in 1988. Retrieved from https://www.zillow.com/research/how-many-years-down-payment-21734/
 
 Byloos, M. (2016). Research Crime Rates and the Impact on Home Values | Homes.com. Retrieved from https://www.homes.com/blog/2016/05/secure-new-home-research-crime-rates-impact-home-value/
 
